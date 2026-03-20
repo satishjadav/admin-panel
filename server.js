@@ -85,7 +85,15 @@ console.log("ENV CHECK:", {
   db: process.env.DB_NAME,
   port: process.env.DB_PORT
 });
-
+app.get("/check-db", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT 1");
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Frontend: http://localhost:${PORT}`);
