@@ -79,6 +79,13 @@ app.get(/^((?!api).)*$/, (req, res) => {
   res.sendFile(path.join(__dirname, './build', 'index.html'));
 });
 
+console.log("ENV CHECK:", {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  db: process.env.DB_NAME,
+  port: process.env.DB_PORT
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Frontend: http://localhost:${PORT}`);
