@@ -21,7 +21,7 @@ const tourManageController = {
     // 1️⃣ TOUR LIST (USER SIDE)
     // ===============================
     async tourList(req, res) {
-        try {
+        //try {
             const tours = await TourManagement.findAll({
                 where: { status: 1 },
                 attributes: [
@@ -48,13 +48,13 @@ const tourManageController = {
                 data: formattedTours
             });
 
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({
-                success: false,
-                message: 'Something went wrong'
-            });
-        }
+       // } catch (error) {
+          //  console.error(error);
+          //  return res.status(500).json({
+            //    success: false,
+              //  message: 'Something went wrong'
+            //});
+        //}
     },
 
     // ===============================
