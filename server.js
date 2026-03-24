@@ -79,6 +79,21 @@ app.get(/^((?!api).)*$/, (req, res) => {
   res.sendFile(path.join(__dirname, './build', 'index.html'));
 });
 
+console.log("ENV CHECK:", {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  db: process.env.DB_NAME,
+  port: process.env.DB_PORT
+});
+app.get("/check-db", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT 1");
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Frontend: http://localhost:${PORT}`);
