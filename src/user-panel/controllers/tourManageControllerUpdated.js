@@ -48,7 +48,7 @@ const tourManageController = {
                 data: formattedTours
             });
 
-       } catch (error) {
+        } catch (error) {
             console.error(error);
             return res.status(500).json({
                 success: false,
@@ -143,14 +143,14 @@ const tourManageController = {
                 customer_name,
                 phone_number,
                 email,
-                pickup_address,
+                pickup_location,
                 pickup_lat,
                 pickup_long,
-                drop_address,
+                drop_location,
                 drop_lat,
                 drop_long,
-                travel_date,
-                travel_time,
+                booking_date,
+                date_time,
                 qty,
                 min_price,
                 pay_price,
@@ -164,7 +164,7 @@ const tourManageController = {
             } = req.body;
 
             // Validate required fields
-            if (!tour_id || !phone_number || !pickup_address || !drop_address || !travel_date || !travel_time) {
+            if (!tour_id || !phone_number || !pickup_location || !drop_location || !booking_date || !date_time) {
                 return res.status(400).json({
                     success: false,
                     message: 'Please provide all required fields'
@@ -186,14 +186,14 @@ const tourManageController = {
                 customer_name: customer_name || null,
                 phone_number,
                 email: email || null,
-                pickup_address,
+                pickup_address: pickup_location,
                 pickup_lat: pickup_lat || null,
                 pickup_long: pickup_long || null,
-                drop_address,
+                drop_address: drop_location,
                 drop_lat: drop_lat || null,
                 drop_long: drop_long || null,
-                travel_date,
-                travel_time,
+                travel_date: booking_date,
+                travel_time: date_time,
                 qty: qty || 1,
                 min_price: min_price || 0,
                 pay_price: pay_price || 0,
@@ -209,25 +209,23 @@ const tourManageController = {
 
             // Send WhatsApp confirmation message
             try {
-                const message = `✅ *Booking Confirmed!* %0A%0A`
-                    + `📋 *Booking ID:* ${order.id}%0A`
-                    + `🗺️ *Tour:* ${tour.tour_name}%0A`
-                    + `📅 *Date:* ${travel_date}%0A`
-                    + `⏰ *Time:* ${travel_time}%0A`
-                    + `📍 *Pickup:* ${pickup_address}%0A`
-                    + `🏁 *Drop:* ${drop_address}%0A`
-                    + `👥 *Persons:* ${qty || 1}%0A`
-                    + `💰 *Total:* ₹${final_price}%0A%0A`
-                    + `Thank you for booking with us!%0A`
-                    + `Track your booking in the dashboard.`;
-
                 const whatsappPhone = formatPhoneForWhatsApp(phone_number);
                 if (whatsappPhone) {
-                    await sendWhatsAppMessage(whatsappPhone, message);
+                    await sendWhatsAppMessage({
+                        to: whatsappPhone,
+                        name: "User",
+                        orderId: "OR" + order.id,
+                        bookingDate: (new Date()).toLocaleDateString('en-GB'),
+                        pickupLocation: pickup_location,
+                        pickupDateTime: booking_date + " " + date_time,
+                        persons: String(qty || 1),
+                        amount: "Custom Amount",
+                        invoiceUrl: `https://yourdomain.com/invoice/${order.id}`, // ✅ important
+                        phone: "9876543210" // company number
+                    });
                 }
             } catch (whatsappError) {
                 console.error("Failed to send WhatsApp confirmation:", whatsappError);
-                // Don't fail the booking if WhatsApp fails
             }
 
             return res.status(201).json({

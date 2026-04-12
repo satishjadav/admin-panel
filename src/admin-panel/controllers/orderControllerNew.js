@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const PDFDocument = require('pdfkit');
 const { TourOrderManagement, TourManagement } = require('../../models');
 const { sendWhatsAppMessage } = require('../../utils/whatsappcopy');
+const BusinessSetting = require('../models/BusinessSetting');
 
 // Order status constants
 const ORDER_STATUS = {
@@ -333,24 +334,40 @@ exports.OrderAmountCollect = async (req, res) => {
       });
     }
     // check payment type
-    if (order.payment_type !== "partial") {
-      return res.status(400).json({
-        success: false,
-        message: "This order is not partial payment"
-      });
-    }
+    // if (order.payment_type !== "partial") {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "This order is not partial payment"
+    //   });
+    // }
     const newAmount = parseFloat(amount);
     const currentPay = parseFloat(order.pay_price || 0);
     const finalPrice = parseFloat(order.final_price);
     const updatedPayPrice = currentPay + newAmount;
-    if (updatedPayPrice > finalPrice) {
-      return res.status(400).json({
-        success: false,
-        message: "Amount exceeds remaining balance"
-      });
-    }
+    // if (updatedPayPrice > finalPrice) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Amount exceeds remaining balance"
+    //   });
+    // }
     // update pay_price
+    const gstSetting = await BusinessSetting.findOne({
+      where: { key: 'tax' }
+    });
+    const gstPercent = gstSetting ? parseFloat(gstSetting.value) : 0;
+    const gstAmount = Number(((updatedPayPrice * gstPercent) / 100).toFixed(2));
+    const finalAmount = updatedPayPrice - gstAmount;
+
+    order.min_price = finalAmount;
+    order.gst = gstPercent;
+    order.gst_price = gstAmount;  
     order.pay_price = updatedPayPrice;
+    order.price = updatedPayPrice;
+    order.final_price = updatedPayPrice;
+    order.transaction_id = "Cash";
+    order.payment_status = "paid";
+    order.payment_method = "Cash";
+
     // update payment status
     if (updatedPayPrice === finalPrice) {
       order.payment_status = "paid";

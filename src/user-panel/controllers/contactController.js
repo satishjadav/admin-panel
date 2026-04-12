@@ -1,19 +1,18 @@
-const contactController = require('../models/Contact');
+const Contact = require('../models/Contact');
 
 exports.store = async (req, res) => {
   try {
-    const { name, phone, message } = req.body;
+    const { name, message,phone } = req.body;
     // validation
     if (!name || !phone || !message) {
       return res.status(400).json({
-        message: 'All fields are required'
+        messages: 'All fields are required'
       });
     }
-
-    const contact = await contactController.create({
-      name,
-      phone,
-      message
+    const contact = await Contact.create({
+      name:name,
+      phone:phone,
+      message:message
     });
 
     return res.status(201).json({
@@ -31,7 +30,7 @@ exports.store = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const contacts = await contactController.findAll({
+    const contacts = await Contact.findAll({
       order: [['id', 'DESC']]
     });
 
