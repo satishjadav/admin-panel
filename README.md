@@ -28,6 +28,14 @@ A complete Node.js API for managing e-commerce operations with admin panel funct
    - Order status updates
    - Payment status management
 
+## EC2 Deployment Notes
+
+- Run Node on internal HTTP only, ideally `127.0.0.1:3001` in production.
+- Terminate HTTPS in Nginx and proxy all requests to `http://127.0.0.1:3001`.
+- Use the sample config at [deploy/nginx/traveller.conf](/abs/path/c:/nodejs/traveller-react-copy/back/deploy/nginx/traveller.conf).
+- Do not open `https://<public-ip>:3001` directly; use `https://<host>/` through Nginx.
+- After deployment, restrict the EC2 security group so port `3001` is not public.
+
 ## API Endpoints
 
 ### Authentication

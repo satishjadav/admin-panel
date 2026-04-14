@@ -27,24 +27,47 @@ const { Hooks } = require('sequelize/lib/hooks');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || (process.env.NODE_ENV === 'production' ? '127.0.0.1' : '0.0.0.0');
+
+const allowedScriptSources = [
+  "'self'",
+  "'unsafe-inline'",
+  "'unsafe-eval'",
+  'https://checkout.razorpay.com',
+  'https://cdn.razorpay.com',
+  'https://cdn.ckeditor.com',
+  'https://maps.googleapis.com',
+  'https://maps.gstatic.com',
+];
 
 // Configure Helmet with CSP to allow Google Maps and Razorpay scripts
+app.set('trust proxy', 1);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://checkout.razorpay.com", "https://maps.googleapis.com", "https://maps.gstatic.com"],
+      scriptSrc: allowedScriptSources,
+      scriptSrcElem: allowedScriptSources,
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "https://api.razorpay.com", "https://maps.googleapis.com", "https://maps.gstatic.com"],
-      frameSrc: ["'self'", "https://checkout.razorpay.com", "https://api.razorpay.com"],
+      connectSrc: [
+        "'self'",
+        'https://api.razorpay.com',
+        'https://checkout.razorpay.com',
+        'https://cdn.razorpay.com',
+        'https://maps.googleapis.com',
+        'https://maps.gstatic.com',
+      ],
+      frameSrc: ["'self'", 'https://checkout.razorpay.com', 'https://api.razorpay.com'],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
       frameAncestors: ["'none'"],
     },
   },
+  crossOriginOpenerPolicy: false,
   crossOriginEmbedderPolicy: false,
+  originAgentCluster: false,
 }));
 app.use(cors());
 app.use(express.json());
@@ -96,10 +119,9 @@ app.get("/check-db", async (req, res) => {
   }
 });
 
-const HOST = process.env.HOST || '0.0.0.0';
-
 app.listen(PORT, HOST, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Frontend: http://localhost:${PORT}`);
-  console.log(`API: http://localhost:${PORT}/v1/api`);
+  console.log(`Server running on http://${HOST}:${PORT}`);
+  console.log(`Frontend: http://${HOST}:${PORT}`);
+  console.log(`API: http://${HOST}:${PORT}/v1/api`);
+  console.log('Production note: terminate HTTPS in Nginx and proxy requests to this internal HTTP port.');
 });
