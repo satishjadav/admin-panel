@@ -23,6 +23,7 @@ const BusinessSettings = require('./src/admin-panel/routes/BusinessSettings');
 const tourManageRoutes = require('./src/user-panel/routes/tourManageRoutesUpdated');
 const razorPayRoutes = require('./src/user-panel/routes/razorPayRoutes');
 const businessRoutes = require('./src/user-panel/routes/businessRoutes');
+const { Hooks } = require('sequelize/lib/hooks');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -94,7 +95,10 @@ app.get("/check-db", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-app.listen(PORT, () => {
+
+const HOST = process.env.HOST || '0.0.0.0';
+
+app.listen(PORT, HOST, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Frontend: http://localhost:${PORT}`);
   console.log(`API: http://localhost:${PORT}/v1/api`);
