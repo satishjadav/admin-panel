@@ -33,7 +33,7 @@ const tourManageController = {
 
     // Add new tour
     Save: async (req, res) => {
-        try {
+        // try {
             const {
                 tour_name,
                 days,
@@ -142,14 +142,14 @@ const tourManageController = {
                 message: 'Tour created successfully',
                 data: newTour
             });
-        } catch (error) {
-            console.error('Error creating tour:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to create tour',
-                error: error.message
-            });
-        }
+        // } catch (error) {
+        //     console.error('Error creating tour:', error);
+        //     res.status(500).json({
+        //         success: false,
+        //         message: 'Failed to create tour',
+        //         error: error.message
+        //     });
+        // }
     },
 
     // Get tour by ID
