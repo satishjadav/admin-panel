@@ -81,7 +81,7 @@ const tourManageController = {
             }
 
             // Handle image upload if exists
-            let imageUrl = null;
+            let imageUrl = "default.png";
             let galleryImages = [];
             const uploadDir = path.join(
                 __dirname,

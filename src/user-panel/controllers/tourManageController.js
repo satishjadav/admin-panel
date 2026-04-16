@@ -24,8 +24,8 @@ const tourManageController = {
                 const data = tour.toJSON();
                 return {
                     ...data,
-                    // image: data.image ? `${process.env.APP_URL}/uploads/tour/${data.image}` : null
-                    image: `https://sit.resrv.in/storage/app/public/tour_and_travels/tour_visit/2026-01-28-6979d57d68e4a.webp`
+                    image: data.image ? `${process.env.APP_URL}/uploads/tour/${data.image}` : null
+                    // image: `https://sit.resrv.in/storage/app/public/tour_and_travels/tour_visit/2026-01-28-6979d57d68e4a.webp`
                 };
             });
             return res.status(200).json({
