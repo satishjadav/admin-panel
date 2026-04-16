@@ -24,9 +24,9 @@ const TourManagement = sequelize.define('TourManagement', {
   },
   image: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     validate: {
-      notEmpty: true
+      notEmpty: false
     }
   },
   images: {
