@@ -18,6 +18,7 @@ router.get('/edit/:id', verifyToken, tourManageController.Edit);
 router.post('/update/:id', verifyToken,  upload.any(), tourManageController.Update);
 router.delete('/delete/:id', verifyToken, tourManageController.Delete);
 router.get('/status-update/:id', verifyToken, tourManageController.StatusUpdate);
+router.get('/remove-image/:id/:index', verifyToken, tourManageController.removeImage);
 
 // Protected routes
 
