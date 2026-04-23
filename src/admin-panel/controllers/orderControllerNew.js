@@ -226,7 +226,6 @@ exports.getOrderInvoice = async (req, res) => {
     doc.text('Description', 50, tableY + 7);
     doc.text('Qty', 280, tableY + 7, { width: 40, align: 'center' });
     doc.text('Rate (₹)', 330, tableY + 7, { width: 70, align: 'right' });
-    doc.text('GST (%)', 410, tableY + 7, { width: 50, align: 'center' });
     doc.text('Amount (₹)', 470, tableY + 7, { width: 75, align: 'right' });
 
     // Table Row
@@ -234,18 +233,17 @@ exports.getOrderInvoice = async (req, res) => {
     doc.fillColor('#f5f5f5').rect(40, rowY, 515, 30).fill();
     doc.fillColor('#333').fontSize(9).font('Helvetica');
 
-    const unitPrice = order.qty > 0 ? (Number(order.price) / order.qty) : (Number(order.price) || 0);
+    const unitPrice = order.qty > 0 ? (Number(order.min_price) / order.qty) : (Number(order.min_price) || 0);
     doc.text(`${order.tour?.tour_name || 'Tour Package'} - Per Person`, 50, rowY + 9, { width: 220 });
     doc.text(order.qty?.toString() || '1', 280, rowY + 9, { width: 40, align: 'center' });
     doc.text(unitPrice.toFixed(2), 330, rowY + 9, { width: 70, align: 'right' });
-    doc.text(`${order.gst || 0}%`, 410, rowY + 9, { width: 50, align: 'center' });
-    doc.text((Number(order.price) || 0).toFixed(2), 470, rowY + 9, { width: 75, align: 'right' });
+    doc.text((Number(order.min_price) || 0).toFixed(2), 470, rowY + 9, { width: 75, align: 'right' });
 
     // ========== TOTALS SECTION ==========
     const totalsY = rowY + 50;
 
     doc.fillColor('#666').fontSize(10).text('Subtotal:', 380, totalsY);
-    doc.fillColor('#333').text(`₹${(Number(order.price) || 0).toFixed(2)}`, 490, totalsY, { width: 60, align: 'right' });
+    doc.fillColor('#333').text(`₹${(Number(order.min_price) || 0).toFixed(2)}`, 490, totalsY, { width: 60, align: 'right' });
 
     doc.fillColor('#666').text(`GST (${order.gst || 0}%):`, 380, totalsY + 18);
     doc.fillColor('#333').text(`₹${(Number(order.gst_price) || 0).toFixed(2)}`, 490, totalsY + 18, { width: 60, align: 'right' });

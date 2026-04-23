@@ -19,6 +19,7 @@ const productRoutes = require('./src/admin-panel/routes/productRoutes');
 const categoryRoutes = require('./src/admin-panel/routes/categoryRoutes');
 const orderRoutes = require('./src/admin-panel/routes/orderRoutesNew');
 const BusinessSettings = require('./src/admin-panel/routes/BusinessSettings');
+const GalleryRoutes = require('./src/admin-panel/routes/GalleryRoutes');
 
 const tourManageRoutes = require('./src/user-panel/routes/tourManageRoutesUpdated');
 const razorPayRoutes = require('./src/user-panel/routes/razorPayRoutes');
@@ -84,6 +85,7 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/gallery', GalleryRoutes);
 
 app.use('/api/gst-settings', BusinessSettings);
 app.use('/api/business-settings', BusinessSettings);
