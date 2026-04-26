@@ -109,7 +109,7 @@ app.get('/health', (req, res) => {
 });
 
 // ✅ FIRST (sitemap should be here)
-app.get("/sitemap", async (req, res) => {
+app.get("/sitemap.xml", async (req, res) => {
   console.log("SITEMAP HIT");
   try {
     const baseUrl = `https://app.bitcat-ujjain.shop`;
