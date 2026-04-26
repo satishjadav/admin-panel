@@ -3,10 +3,11 @@ const cors = require('cors');
 const helmet = require('helmet');
 const multer = require('multer');
 const path = require('path');
+const { TourManagement } = require('./src/models');
 require('dotenv').config();
 
 // Configure multer for file uploads
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
@@ -95,12 +96,61 @@ app.use('/v1/api/razorpay', razorPayRoutes);
 app.use('/v1/api/orders', tourManageRoutes);
 app.use('/v1/api/information', businessRoutes);
 
+
+const getToursFromDB = async () => {
+  return await TourManagement.findAll({
+    attributes: ["slug", "updated_at"],
+    where: { status: 1 }
+  });
+};
+
 app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-// SPA Fallback - Serve index.html for all non-API routes (React Router support)
-// Use a regex pattern instead of '*' for Express 5 compatibility
+// ✅ FIRST (sitemap should be here)
+app.get("/sitemap.xml", async (req, res) => {
+  console.log("SITEMAP HIT");
+  try {
+    const baseUrl = `https://app.bitcat-ujjain.shop`;
+    const tours = await getToursFromDB();
+
+    const staticPages = [
+      "",
+      "about",
+      "trips",
+      "gallery",
+      "contact",
+      "privacy-policy",
+      "terms-and-conditions",
+      "cancellation-policy",
+    ];
+
+    let urls = staticPages.map(page => `
+      <url><loc>${baseUrl}/${page}</loc></url>
+    `).join("");
+
+    urls += tours.map(tour => `
+      <url><loc>${baseUrl}/tour-details/${tour.slug}</loc></url>
+    `).join("");
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      ${urls}
+    </urlset>`;
+
+    res.header("Content-Type", "application/xml");
+    res.send(sitemap);
+
+  } catch (error) {
+    res.status(500).send("Error generating sitemap");
+  }
+});
+
+// ✅ THEN static
+app.use(express.static(path.join(__dirname, './build')));
+
+// ✅ LAST (React fallback)
 app.get(/^((?!api).)*$/, (req, res) => {
   res.sendFile(path.join(__dirname, './build', 'index.html'));
 });
