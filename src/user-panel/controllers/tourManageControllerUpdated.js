@@ -208,25 +208,25 @@ const tourManageController = {
             });
 
             // Send WhatsApp confirmation message
-            try {
-                const whatsappPhone = formatPhoneForWhatsApp(phone_number);
-                if (whatsappPhone) {
-                    await sendWhatsAppMessage({
-                        to: whatsappPhone,
-                        name: "User",
-                        orderId: "OR" + order.id,
-                        bookingDate: (new Date()).toLocaleDateString('en-GB'),
-                        pickupLocation: pickup_location,
-                        pickupDateTime: booking_date + " " + date_time,
-                        persons: String(qty || 1),
-                        amount: "Custom Amount",
-                        invoiceUrl: `https://yourdomain.com/invoice/${order.id}`, // ✅ important
-                        phone: "9876543210" // company number
-                    });
-                }
-            } catch (whatsappError) {
-                console.error("Failed to send WhatsApp confirmation:", whatsappError);
-            }
+            // try {
+            //     const whatsappPhone = formatPhoneForWhatsApp(phone_number);
+            //     if (whatsappPhone) {
+            //         await sendWhatsAppMessage({
+            //             to: whatsappPhone,
+            //             name: "User",
+            //             orderId: "OR" + order.id,
+            //             bookingDate: (new Date()).toLocaleDateString('en-GB'),
+            //             pickupLocation: pickup_location,
+            //             pickupDateTime: booking_date + " " + date_time,
+            //             persons: String(qty || 1),
+            //             amount: "Custom Amount",
+            //             invoiceUrl: `https://yourdomain.com/invoice/${order.id}`, // ✅ important
+            //             phone: "9876543210" // company number
+            //         });
+            //     }
+            // } catch (whatsappError) {
+            //     console.error("Failed to send WhatsApp confirmation:", whatsappError);
+            // }
 
             return res.status(201).json({
                 success: true,

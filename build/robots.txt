@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /admin/
 Allow: /
-Sitemap: https://app.bitcat-ujjain.shop/sitemap.xml
+Sitemap: http://ujjaintour.co.in/sitemap
