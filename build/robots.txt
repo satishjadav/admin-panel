@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /admin/
 Allow: /
-Sitemap: http://ujjaintour.co.in/sitemap
+Sitemap: http://ujjaintour.co.in/sitemap.xml
