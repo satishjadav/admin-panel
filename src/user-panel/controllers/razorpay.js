@@ -3,6 +3,8 @@ const crypto = require("crypto");
 const TourOrderManagement = require('../models/tourOrders');
 const { sendWhatsAppMessage } = require('../../utils/whatsappcopy');
 const BusinessSetting = require("../../models/business_setting");
+const admin = require('../../config/firebase');
+const Admin = require('../../admin-panel/models/Admin');
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET
@@ -201,6 +203,24 @@ exports.verifyPayment = async (req, res) => {
         }
       } catch (whatsappError) {
         console.error("Failed to send WhatsApp notification:", whatsappError);
+      }
+
+      // Send Push Notification to Admin
+      try {
+        const tokens = await Admin.getAllFcmTokens();
+        if (tokens && tokens.length > 0) {
+          const message = {
+            notification: {
+              title: 'New Booking Received! ✈️',
+              body: `A new booking has been made. Booking ID: ${bookingRecord.id}, Travel Date: ${bookingRecord.travel_date}`
+            },
+            tokens: tokens
+          };
+          await admin.messaging().sendEachForMulticast(message);
+          console.log(`Push notification sent to admins for booking ${bookingRecord.id}`);
+        }
+      } catch (fcmError) {
+        console.error("Failed to send Firebase push notification:", fcmError);
       }
 
       res.json({

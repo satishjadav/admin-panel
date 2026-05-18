@@ -20,6 +20,7 @@
     "easyinvoice": "^3.0.47",
     "express": "^5.2.1",
     "express-formidable": "^1.2.0",
+    "firebase-admin": "^13.10.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",

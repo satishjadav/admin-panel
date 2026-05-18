@@ -112,7 +112,7 @@ app.get('/health', (req, res) => {
 app.get("/sitemap.xml", async (req, res) => {
   console.log("SITEMAP HIT");
   try {
-    const baseUrl = `http://ujjaintour.co.in`;
+    const baseUrl = `https://ujjaintour.co.in/`;
     const tours = await getToursFromDB();
 
     const staticPages = [

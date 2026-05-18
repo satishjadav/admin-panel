@@ -25,6 +25,22 @@ const Admin = {
       'UPDATE admins SET last_login_at = NOW() WHERE id = ?',
       [id]
     );
+  },
+
+  // Update FCM token
+  updateFcmToken: async (id, token) => {
+    await pool.execute(
+      'UPDATE admins SET cm_firebase_token = ? WHERE id = ?',
+      [token, id]
+    );
+  },
+
+  // Get all admin FCM tokens
+  getAllFcmTokens: async () => {
+    const [rows] = await pool.execute(
+      'SELECT cm_firebase_token FROM admins WHERE cm_firebase_token IS NOT NULL AND status = 1'
+    );
+    return rows.map(r => r.cm_firebase_token);
   }
 };
 

@@ -63,8 +63,8 @@ const tourManageController = {
             });
         }
 
-        //  tour.image =  tour.image ? `${process.env.APP_URL}/uploads/tour/${tour.image}` : null;
-        tour.image = `https://sit.resrv.in/storage/app/public/tour_and_travels/tour_visit/2026-01-28-6979d57d68e4a.webp`;
+        tour.image = tour.image ? `${process.env.APP_URL}/uploads/tour/${tour.image}` : null;
+        // tour.image = `https://sit.resrv.in/storage/app/public/tour_and_travels/tour_visit/2026-01-28-6979d57d68e4a.webp`;
         let images = [];
         if (tour.images) {
             const imageArray = JSON.parse(tour.images);

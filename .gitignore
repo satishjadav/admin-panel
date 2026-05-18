@@ -4,3 +4,4 @@
 /storage/*.key
 /public/storage
 .phpunit.result.cache
+public/uploads/*

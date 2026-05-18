@@ -97,6 +97,29 @@ const adminController = {
         message: 'Server error'
       });
     }
+  },
+
+  // Update FCM token
+  updateFcmToken: async (req, res) => {
+    try {
+      const { token } = req.body;
+      if (!token) {
+        return res.status(400).json({ success: false, message: 'Token is required' });
+      }
+
+      await Admin.updateFcmToken(req.user.id, token);
+      
+      res.json({
+        success: true,
+        message: 'FCM token updated successfully'
+      });
+    } catch (error) {
+      console.error('Update FCM token error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Server error'
+      });
+    }
   }
 };
 

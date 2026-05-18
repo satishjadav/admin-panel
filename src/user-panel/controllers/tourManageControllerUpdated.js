@@ -1,6 +1,8 @@
 const { TourManagement, TourOrderManagement } = require('../../models');
 const BusinessSetting = require('../../models/business_setting');
 const { sendWhatsAppMessage } = require('../../utils/whatsappcopy');
+const admin = require('../../config/firebase');
+const Admin = require('../../admin-panel/models/Admin');
 
 // Helper function to format phone number for WhatsApp
 const formatPhoneForWhatsApp = (phone) => {
@@ -207,26 +209,23 @@ const tourManageController = {
                 order_status: 0 // Pending
             });
 
-            // Send WhatsApp confirmation message
-            // try {
-            //     const whatsappPhone = formatPhoneForWhatsApp(phone_number);
-            //     if (whatsappPhone) {
-            //         await sendWhatsAppMessage({
-            //             to: whatsappPhone,
-            //             name: "User",
-            //             orderId: "OR" + order.id,
-            //             bookingDate: (new Date()).toLocaleDateString('en-GB'),
-            //             pickupLocation: pickup_location,
-            //             pickupDateTime: booking_date + " " + date_time,
-            //             persons: String(qty || 1),
-            //             amount: "Custom Amount",
-            //             invoiceUrl: `https://yourdomain.com/invoice/${order.id}`, // ✅ important
-            //             phone: "9876543210" // company number
-            //         });
-            //     }
-            // } catch (whatsappError) {
-            //     console.error("Failed to send WhatsApp confirmation:", whatsappError);
-            // }
+            // Send Push Notification to Admin
+            try {
+                const tokens = await Admin.getAllFcmTokens();
+                if (tokens && tokens.length > 0) {
+                    const message = {
+                        notification: {
+                            title: 'New Tour Booking Created! ✈️',
+                            body: `A new booking has been made by ${customer_name || 'Guest'} (${phone_number}). Booking ID: ${order.id}, Tour: ${tour.tour_name}`
+                        },
+                        tokens: tokens
+                    };
+                    await admin.messaging().sendEachForMulticast(message);
+                    console.log(`Push notification sent to admins for booking ${order.id}`);
+                }
+            } catch (fcmError) {
+                console.error("Failed to send Firebase push notification to admin:", fcmError);
+            }
 
             return res.status(201).json({
                 success: true,
