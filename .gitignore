@@ -5,4 +5,4 @@
 /public/storage
 .phpunit.result.cache
 public/uploads/*
-serviceAccountKey.json
+./serviceAccountKey.json
