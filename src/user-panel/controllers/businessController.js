@@ -1,5 +1,6 @@
 const BusinessSetting = require('../../models/business_setting');
-
+const Admin = require('../../admin-panel/models/Admin');
+const firebaseAdmin = require('../../config/firebase');
 
 const businessController = {
 
@@ -105,7 +106,65 @@ const businessController = {
                 message: error.message
             });
         }
+    },
+
+    // Send booking success notification to admins
+  async sendBookingSuccessNotification (req, res) {
+    try {
+      let { booking_id, title, message } = req.body || {};
+      if (typeof req.body === 'string' && req.body.trim()) {
+        try {
+          const parsed = JSON.parse(req.body);
+          booking_id = parsed.booking_id;
+          title = parsed.title;
+          message = parsed.message;
+        } catch (parseError) {
+          console.warn('Unable to parse raw request body as JSON:', parseError.message);
+        }
+      }
+      
+      const tokens = await Admin.getAllFcmTokens();
+      console.log('Received booking success notification request:', { booking_id, title, message, body: tokens });
+      if (!tokens || tokens.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'No admin device tokens found to send notification.'
+        });
+      }
+
+      const notificationTitle = title || 'Booking Success';
+      const notificationBody = message || `Booking ${booking_id ? `#${booking_id} ` : ''}has been confirmed successfully.`;
+
+      const payload = {
+        notification: {
+          title: notificationTitle,
+          body: notificationBody
+        },
+        data: {
+          booking_id: booking_id ? String(booking_id) : '',
+          type: 'booking_success'
+        },
+        tokens
+      };
+
+      const response = await firebaseAdmin.messaging().sendEachForMulticast(payload);
+
+      return res.json({
+        success: true,
+        message: 'Booking success notification sent to admins.',
+        sentCount: response.successCount,
+        failureCount: response.failureCount
+      });
+    } catch (error) {
+      console.error('Send booking success notification error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to send booking success notification.',
+        error: error.message
+      });
     }
+  },
+
     
 };
 
