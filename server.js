@@ -5,6 +5,8 @@ const multer = require('multer');
 const path = require('path');
 const { TourManagement } = require('./src/models');
 require('dotenv').config();
+// Ensure Firebase Admin is initialized early
+require('./src/config/firebase');
 
 // Configure multer for file uploads
 const upload = multer({

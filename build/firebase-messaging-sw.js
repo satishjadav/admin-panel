@@ -5,12 +5,13 @@ importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compa
 
 // TODO: Replace with your actual Firebase Web Config
 const firebaseConfig = {
-  apiKey: "AIzaSyBNsNd1OSPgjTm9NxX38MZq_pdE5cpUy3A",
-  authDomain: "manalsoftech-6807e.firebaseapp.com",
-  projectId: "manalsoftech-6807e",
-  storageBucket: "manalsoftech-6807e.appspot.com",
-  messagingSenderId: "1023155540439",
-  appId: "1:1023155540439:web:8f7f2f268931822bbffb92"
+  apiKey: "AIzaSyACnKFQZU-Um7ClUkzaghS2evOBq-wFpRk",
+  authDomain: "satish-jadav.firebaseapp.com",
+  projectId: "satish-jadav",
+  storageBucket: "satish-jadav.firebasestorage.app",
+  messagingSenderId: "792889150456",
+  appId: "1:792889150456:web:46761d975a2085c07a240d",
+  measurementId: "G-PMEKTXH6DH"
 };
 
 try {
